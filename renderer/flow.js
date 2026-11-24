@@ -1,11 +1,12 @@
 // Paket akışı görselleştirmesi.
-// Site adını taşıyan paketler soldan sağa DPI kapısına ilerler.
+// TLS ClientHello paketleri soldan sağa DPI kapısına ilerler. Gizlilik için gerçek site adı
+// hiçbir zaman gösterilmez; SNI alanı maskelenmiş olarak çizilir.
 // Kapalı: kapı SNI'yi okur, paket kırmızıya döner ve düşer.
 // Açık: paket, motorun gerçekten kestiği yerlerden (1. karakter + SNI ortası) parçalanır,
 //        kapıdan tanınmadan geçer ve karşıda yeniden birleşir.
 
-const SAMPLE = ['discord.com', 'gateway.discord.gg', 'cdn.discordapp.com', 'media.discordapp.net',
-  'roblox.com', 'wattpad.com', 'status.discord.com', 'images-ext-1.discordapp.net', 'rbxcdn.com'];
+// Maskelenmiş paket etiketi: "SNI ••••••••"
+const makeLabel = () => ({ head: 'SNI ', sni: '•'.repeat(6 + ((Math.random() * 7) | 0)) });
 
 const ROWS = 5;
 const SPEED = 95;            // px/sn
@@ -17,7 +18,6 @@ export function createFlow(canvas) {
   let on = false, mix = 0;   // mix: 0 kapalı → 1 açık (geçiş animasyonu)
   let colors = {};
   const packets = [];
-  const live = [];           // gerçek trafikten gelen adlar
   let spawnT = 0, gateFlash = 0, gateFlashBad = false, lastT = performance.now(), visible = true;
 
   function readColors() {
@@ -47,11 +47,13 @@ export function createFlow(canvas) {
 
   function spawn() {
     const g = geo();
-    const host = live.length && Math.random() < 0.85 ? live[(Math.random() * live.length) | 0] : SAMPLE[(Math.random() * SAMPLE.length) | 0];
+    const { head, sni } = makeLabel();
+    const host = head + sni;
     const free = [...Array(ROWS).keys()].filter((r) => !packets.some((p) => p.row === r && p.x < g.xs + 140));
     if (!free.length) return;
     const row = free[(Math.random() * free.length) | 0];
-    const mid = Math.max(2, Math.floor(host.length / 2));
+    // Motorla aynı kesim noktaları: ilk bayt ve SNI'nin ortası
+    const mid = head.length + Math.max(1, Math.floor(sni.length / 2));
     const parts = [host.slice(0, 1), host.slice(1, mid), host.slice(mid)];
     const widths = parts.map(measure);
     packets.push({ host, parts, widths, w: measure(host) + 22, row, x: g.xs - 20, split: 0, state: 'go', t: 0, alpha: 0, passed: false });
@@ -163,8 +165,8 @@ export function createFlow(canvas) {
       else if (done) { stroke = colors.a1; tc = colors.text; }
 
       if (p.split < 0.02 || blocked) {
-        const label = done ? '✓ ' + p.host : blocked ? '✕ ' + p.host : p.host;
-        const w = done || blocked ? p.w + measure('✓ ') : p.w;
+        const label = done ? '✓ ' + p.host : blocked ? '✕ engellendi' : p.host;
+        const w = done ? p.w + measure('✓ ') : blocked ? measure('✕ engellendi') + 22 : p.w;
         drawPill(blocked ? p.x - (w - p.w) : p.x, y + dropY, w, label, stroke, fill, tc, p.alpha * fade);
       } else {
         // Parçalar arasında boşluk aç (gerçek kesim noktaları)
@@ -198,9 +200,6 @@ export function createFlow(canvas) {
   return {
     setActive(v) { on = v; },
     setTheme() { requestAnimationFrame(readColors); },
-    addHost(h) {
-      if (!h || live.includes(h)) return;
-      live.push(h); if (live.length > 30) live.shift();
-    },
+
   };
 }

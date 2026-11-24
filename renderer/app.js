@@ -59,12 +59,12 @@ function render() {
   document.body.classList.toggle('on', on);
   scene.setActive(on);
   document.body.classList.toggle('svc-mode', !!s.serviceMode);
-  $('#eyebrow').textContent = on ? (S.service ? 'Bağlı · arka plan servisi' : 'Bağlı') : 'Bağlı değil';
-  $('#title').innerHTML = on ? 'Erişim<br />açık' : 'Süzgece<br />takılıyorsun';
+  $('#eyebrow').textContent = on ? (S.service ? 'Etkin · arka plan servisi' : 'Etkin') : 'Kapalı';
+  $('#title').textContent = on ? 'Bağlı' : 'Bağlı değil';
   const scope = s.scope === 'all' ? 'tüm siteler' : `${S.domainCount} alan adı`;
   $('#sub').textContent = on
-    ? (S.service ? `Arka plan servisi çalışıyor. Bu pencereyi kapatsan da erişim açık kalır. Kapsam: ${scope}.` : `Trafiğin bölünerek DPI'nın gözünden kaçıyor. Kapsam: ${scope}.`)
-    : 'Discord ve seçtiğin siteler DPI tarafından engelleniyor. Erişimi açmak için bağlan.';
+    ? (S.service ? `Arka planda çalışıyor; bu pencereyi kapatsan da açık kalır. Kapsam: ${scope}.` : `Engellenen sitelere erişebilirsin. Kapsam: ${scope}.`)
+    : 'Engellenen sitelere erişmek için bağlan.';
   $('#connectLabel').textContent = on ? 'Bağlantıyı kes' : 'Bağlan';
   $('#sScope').textContent = s.scope === 'all' ? 'Tüm siteler' : S.domainCount;
   const names = (s.presets || []).map((k) => S.presets[k] && S.presets[k].name).filter(Boolean);
@@ -82,7 +82,7 @@ setInterval(tick, 1000);
 $('#connectBtn').onclick = async () => {
   document.body.classList.add('busy');
   try { S.running = await api.toggle(); } finally { document.body.classList.remove('busy'); }
-  if (!S.running) { resetSpark(); }
+  if (!S.running) resetStats();
   render();
 };
 
@@ -90,12 +90,17 @@ $('#discordBtn').onclick = async () => {
   try { toast(`${await api.launchDiscord()} SplitDPI üzerinden başlatılıyor`); } catch (e) { toast(cleanErr(e), true); }
 };
 
-api.on('state', (st) => { S.running = st.running; S.startedAt = st.startedAt; S.service = st.service; if (!st.running) resetSpark(); render(); });
-api.on('hosts', (list) => (list || []).forEach((h) => scene.addHost(h)));
+api.on('state', (st) => { S.running = st.running; S.startedAt = st.startedAt; S.service = st.service; if (!st.running) resetStats(); render(); });
 
 // ---------- İstatistik + canlı grafik ----------
 const HIST = 60;
 let upH = Array(HIST).fill(0), downH = Array(HIST).fill(0), last = null;
+// Bağlantı kesilince eski oturumun sayıları ekranda kalmasın
+function resetStats() {
+  resetSpark();
+  $('#sBypassed').textContent = '0'; $('#sConn').textContent = '0 bağlantı';
+  $('#sTotal').textContent = '0 B'; $('#sActive').textContent = '0 aktif bağlantı';
+}
 function resetSpark() { upH.fill(0); downH.fill(0); last = null; drawSpark(); $('#rUp').textContent = '0 B/s'; $('#rDown').textContent = '0 B/s'; }
 
 api.on('stats', (st) => {
@@ -153,7 +158,6 @@ api.on('log', (l) => {
   ul.prepend(li);
   while (ul.children.length > 400) ul.lastChild.remove();
   if (l.level === 'error') toast(l.msg, true);
-  if (l.level === 'ok') scene.addHost(l.msg.split(' → ')[0]);
 });
 $('#clearLogs').onclick = () => ($('#logs').innerHTML = '<li class="empty">Kayıtlar temizlendi.</li>');
 $$('#logFilter button').forEach((b) => (b.onclick = () => {
@@ -238,5 +242,13 @@ $$('[data-k]').forEach((el) => {
   $('#aboutVer').textContent = 'v' + st.version;
   fillSettings(); applyTheme(); renderPresets(); render();
   requestAnimationFrame(() => go('home'));
+  if (!st.settings.onboarded) {
+    $('#welcome').hidden = false;
+    $('#welcomeBtn').onclick = async () => {
+      $('#welcome').classList.add('out');
+      setTimeout(() => ($('#welcome').hidden = true), 350);
+      await save({ onboarded: true }, false);
+    };
+  }
   if (!st.discord) { $('#discordBtn').disabled = true; $('#discordBtn').title = 'Discord kurulu bulunamadı'; }
 })();

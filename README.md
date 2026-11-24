@@ -37,7 +37,7 @@ Türkiye'deki internet sağlayıcıları Discord, Roblox ve Wattpad gibi servisl
 > **Windows SmartScreen uyarısı:** Kurulum dosyası dijital olarak imzalı olmadığı için Windows "Bilgisayarınız korundu" uyarısı gösterebilir. **Ek bilgi → Yine de çalıştır** ile devam edebilirsin. İndirdiğin dosyanın değiştirilmediğini, sürüm notlarındaki SHA-256 değeriyle karşılaştırarak doğrulayabilirsin:
 >
 > ```powershell
-> Get-FileHash .\SplitDPI-Setup-1.2.2.exe -Algorithm SHA256
+> Get-FileHash .\SplitDPI-Setup-1.3.0.exe -Algorithm SHA256
 > ```
 
 Önceki adıyla (Geçit) kurulmuş bir sürüm varsa kurulum dosyası onu otomatik olarak kaldırır ve ayarlarını taşır.
@@ -128,6 +128,7 @@ SplitDPI sürücü yüklemez, başka süreçlere müdahale etmez, oyun dosyalar�
 - Paketlenmiş uygulamada Electron'un `RunAsNode`, `NODE_OPTIONS` ve `--inspect` özellikleri [fuse](https://www.electronjs.org/docs/latest/tutorial/fuses) ile kalıcı olarak kapatılmıştır. Uygulama yalnızca kendi paketinden kod yükler.
 - Arayüzden gelen tüm ayarlar ana süreçte doğrulanır.
 - Uygulama hiçbir veri toplamaz ve dışarıya göndermez. Bağlandığı tek dış adres, ayarladığın DoH sağlayıcısıdır.
+- Ana ekrandaki akış animasyonu gerçek site adlarını hiçbir zaman göstermez, ziyaret edilen siteler diske kaydedilmez. Site adları yalnızca sorun gidermek için Kayıtlar ekranında, uygulama açıkken bellekte tutulur.
 
 Bir güvenlik açığı bulursan lütfen herkese açık bir issue açmak yerine [SECURITY.md](SECURITY.md) belgesindeki adımları izle.
 

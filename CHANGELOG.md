@@ -1,5 +1,13 @@
 # Değişiklik günlüğü
 
+## 1.3.0
+
+- **Gizlilik:** Ana ekrandaki akış animasyonu artık gerçek site adlarını göstermiyor; SNI alanı maskelenmiş olarak çiziliyor. Ekran paylaşırken ziyaret ettiğin siteler görünmez.
+- Arka plan servisi son bağlanılan siteleri artık diske yazmıyor.
+- İlk açılışta kısa bir tanıtım ekranı.
+- Ana ekran metinleri sadeleştirildi: **Bağlı** / **Bağlı değil**.
+- Düzeltme: Bağlantı kesildiğinde önceki oturumun istatistikleri ekranda kalıyordu.
+
 ## 1.2.2
 
 - DNS kaydı olmayan adresler (ör. `*.dc-telemetry.net` ölçüm adresleri) artık uyarı olarak değil, bilgi satırı olarak gösteriliyor.

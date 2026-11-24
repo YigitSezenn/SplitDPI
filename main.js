@@ -27,7 +27,7 @@ app.setAppUserModelId('com.yigit.splitdpi');
 
 // ---------- Ayarlar ----------
 const BASE = { ...DEFAULTS, scope: 'all', presets: ['discord'], customDomains: [], theme: 'system', systemProxy: true,
-  autoStart: false, startMinimized: false, connectOnLaunch: false, serviceMode: false };
+  autoStart: false, startMinimized: false, connectOnLaunch: false, serviceMode: false, onboarded: false };
 delete BASE.domains;
 
 function loadSettings() {
@@ -57,7 +57,7 @@ const VALIDATORS = {
   presets: (v) => Array.isArray(v) && v.length <= 20 && v.every((k) => Object.prototype.hasOwnProperty.call(PRESETS, k)),
   customDomains: (v) => Array.isArray(v) && v.length <= 1000 && v.every((d) => typeof d === 'string' && DOMAIN_RE.test(d)),
 };
-for (const k of ['tlsRecordSplit', 'tcpSplit', 'systemProxy', 'autoStart', 'startMinimized', 'connectOnLaunch', 'serviceMode']) VALIDATORS[k] = (v) => typeof v === 'boolean';
+for (const k of ['tlsRecordSplit', 'tcpSplit', 'systemProxy', 'autoStart', 'startMinimized', 'connectOnLaunch', 'serviceMode', 'onboarded']) VALIDATORS[k] = (v) => typeof v === 'boolean';
 function sanitize(patch) {
   if (!patch || typeof patch !== 'object') throw new Error('Geçersiz ayar');
   const out = {};
@@ -83,9 +83,9 @@ if (SERVICE) runService(); else runApp();
 // SERVİS: penceresiz motor. Durumunu servis.json'a yazar, ayar değişikliklerini izler.
 // =====================================================================
 function runService() {
-  let proxy, startedAt = Date.now(), recent = [];
+  let proxy, startedAt = Date.now();
   const writeStatus = () => {
-    try { fs.writeFileSync(STATUS_FILE, JSON.stringify({ pid: process.pid, startedAt, port: settings.port, updated: Date.now(), stats: proxy.stats, recent })); } catch { /* yut */ }
+    try { fs.writeFileSync(STATUS_FILE, JSON.stringify({ pid: process.pid, startedAt, port: settings.port, updated: Date.now(), stats: proxy.stats })); } catch { /* yut */ }
   };
   const shutdown = () => {
     try { fs.unlinkSync(STATUS_FILE); } catch { /* yok */ }
@@ -94,11 +94,6 @@ function runService() {
 
   app.whenReady().then(async () => {
     proxy = new SplitProxy(engineOpts());
-    proxy.on('log', (l) => {
-      if (l.level !== 'ok') return;
-      const host = l.msg.split(' → ')[0];
-      if (!recent.includes(host)) { recent.push(host); if (recent.length > 20) recent.shift(); }
-    });
     try { await proxy.start(); } catch { app.exit(1); return; }
     if (settings.systemProxy) await system.enable(settings.port).catch(() => {});
     writeStatus();
@@ -161,7 +156,6 @@ function runApp() {
     const on = !!st;
     if (on) {
       send('stats', st.stats);
-      send('hosts', st.recent);
     }
     if (on !== lastSvc || (on && startedAt !== st.startedAt)) {
       lastSvc = on;

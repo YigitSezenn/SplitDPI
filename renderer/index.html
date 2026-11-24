@@ -33,9 +33,9 @@
         <div class="hero">
           <canvas id="scene"></canvas>
           <div class="hero-text">
-            <span class="eyebrow"><i class="dot"></i><span id="eyebrow">Bağlı değil</span></span>
-            <h1 class="title" id="title">Süzgece<br />takılıyorsun</h1>
-            <p class="sub" id="sub">Discord ve seçtiğin siteler DPI tarafından engelleniyor. Erişimi açmak için bağlan.</p>
+            <span class="eyebrow"><i class="dot"></i><span id="eyebrow">Kapalı</span></span>
+            <h1 class="title" id="title">Bağlı değil</h1>
+            <p class="sub" id="sub">Engellenen sitelere erişmek için bağlan.</p>
             <div class="timer" id="timer" aria-live="polite">00:00:00</div>
             <div class="cta">
               <button class="connect" id="connectBtn">
@@ -123,6 +123,25 @@
         <ul class="logs" id="logs"><li class="empty">Henüz kayıt yok. Bağlandığında burada görünecek.</li></ul>
       </section>
     </main>
+  </div>
+
+  <!-- İlk açılış -->
+  <div class="welcome" id="welcome" hidden>
+    <div class="welcome-card">
+      <img class="welcome-logo" src="../assets/icon.svg" alt="" />
+      <h1>SplitDPI</h1>
+      <p class="welcome-lead">DPI ile engellenen sitelere, trafiğini herhangi bir sunucuya göndermeden eriş.</p>
+      <ul class="welcome-list">
+        <li><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+          <div><b>Bilgisayarında çalışır</b><span>Trafik bir VPN'e ya da üçüncü bir tarafa yönlendirilmez, hız kaybı olmaz.</span></div></li>
+        <li><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          <div><b>Yönetici izni gerekmez</b><span>Sürücü yüklemez, sistem dosyalarına ve diğer uygulamalara dokunmaz.</span></div></li>
+        <li><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><path d="M3 3l18 18"/></svg>
+          <div><b>Veri toplamaz</b><span>Telemetri, hesap ya da reklam yok. Kaynak kodu herkese açık.</span></div></li>
+      </ul>
+      <button class="connect welcome-btn" id="welcomeBtn">Başla</button>
+      <p class="welcome-note">Varsayılan olarak tüm sitelerde çalışır. Bunu Siteler ekranından değiştirebilirsin.</p>
+    </div>
   </div>
 
   <div class="toast" id="toast"></div>
