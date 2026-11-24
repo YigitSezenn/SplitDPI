@@ -52,7 +52,11 @@ async function resolve(host, provider = 'cloudflare') {
       }
     } catch (e) { lastErr = e; }
   }
-  throw lastErr || new Error(`Çözülemedi: ${host}`);
+  if (lastErr) throw lastErr;
+  // Sağlayıcılar yanıt verdi ama kayıt yok (NXDOMAIN). Telemetri adreslerinde normaldir, hata değildir.
+  const err = new Error('alan adının DNS kaydı yok');
+  err.code = 'ENOTFOUND';
+  throw err;
 }
 
 function clearCache() { cache.clear(); }

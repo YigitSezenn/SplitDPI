@@ -1,5 +1,9 @@
 # Değişiklik günlüğü
 
+## Yayımlanmamış
+
+- DNS kaydı olmayan adresler (ör. `*.dc-telemetry.net` ölçüm adresleri) artık uyarı olarak değil, bilgi satırı olarak gösteriliyor.
+
 ## 1.2.1
 
 Güvenlik düzeltmeleri (Claude Security taramasıyla bulundu):

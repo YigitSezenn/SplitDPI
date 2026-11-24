@@ -157,8 +157,14 @@ class SplitProxy extends EventEmitter {
     try {
       up = await this.connectUpstream(host, port);
     } catch (e) {
-      this.stats.errors++; this.stats.active--;
-      this.log('warn', e.status === 403 ? e.message : `${host}: ${e.message}`);
+      this.stats.active--;
+      if (e.code === 'ENOTFOUND') {
+        // Var olmayan alan adı: tarayıcı/Windows bunu zaten bekliyor, uyarı olarak gösterme
+        this.log('info', `${host}: alan adının DNS kaydı yok`);
+      } else {
+        this.stats.errors++;
+        this.log('warn', e.status === 403 ? e.message : `${host}: ${e.message}`);
+      }
       client.end(e.status === 403 ? 'HTTP/1.1 403 Forbidden\r\n\r\n' : 'HTTP/1.1 502 Bad Gateway\r\n\r\n');
       return;
     }

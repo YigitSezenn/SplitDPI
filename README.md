@@ -94,8 +94,8 @@ Bağlantının geri kalanı olduğu gibi aktarılır. SplitDPI şifreli trafiği
 **Bağlanıyor ama site açılmıyor.**
 **Ayarlar → Parçalar arası bekleme** değerini 20–50 ms'ye çıkar. Bazı sağlayıcılar parçaları kısa süre içinde birleştirip inceler.
 
-**"Çözülemedi" uyarıları görüyorum.**
-Bunlar genellikle hiç DNS kaydı olmayan telemetri adresleridir (ör. `*.dc-telemetry.net`) ve zararsızdır. Sürekli tekrar ediyorsa DoH sağlayıcısını değiştir.
+**Kayıtlarda "alan adının DNS kaydı yok" satırları görüyorum.**
+Bunlar bilerek kayıtsız oluşturulan ölçüm adresleridir (ör. Windows'un `*.dc-telemetry.net` adresleri) ve zararsızdır. Gerçek bir site için görüyorsan adresi kontrol et ya da DoH sağlayıcısını değiştir.
 
 **Bazı siteler hâlâ açılmıyor.**
 Bazı siteler alan adıyla değil, doğrudan IP adresiyle engellenir. Bu tür engelleri SplitDPI gibi yerel araçlar aşamaz, VPN gerekir. Kayıtlar ekranında site "parça" olarak görünüyor ama bağlantı zaman aşımına uğruyorsa sebep büyük ihtimalle budur.
