@@ -1,0 +1,98 @@
+{
+  "name": "splitdpi",
+  "productName": "SplitDPI",
+  "version": "1.2.0",
+  "description": "Türkiye'de DPI ile engellenen sitelere erişim için yerel, sürücüsüz Windows uygulaması",
+  "main": "main.js",
+  "author": "Süleyman Yiğit Sezen",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "test": "node test/engine.test.js",
+    "pack": "electron-builder --win dir --x64",
+    "installer": "node build/installer.js",
+    "dist": "npm run pack && npm run installer"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^45.4.1",
+    "electron-builder": "^26.0.0",
+    "resedit": "^2.0.0",
+    "@electron/fuses": "^2.1.0"
+  },
+  "build": {
+    "appId": "com.yigit.splitdpi",
+    "productName": "SplitDPI",
+    "files": [
+      "main.js",
+      "preload.js",
+      "engine/**",
+      "renderer/**",
+      "assets/**"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "executableName": "SplitDPI",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "SplitDPI",
+      "createDesktopShortcut": true,
+      "runAfterFinish": true,
+      "artifactName": "SplitDPI-Setup-${version}.exe",
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "installerHeaderIcon": "assets/icon.ico",
+      "uninstallDisplayName": "SplitDPI",
+      "language": "1055",
+      "installerLanguages": [
+        "tr_TR"
+      ],
+      "perMachine": false
+    },
+    "portable": {
+      "artifactName": "SplitDPI-Portable-${version}.exe"
+    },
+    "afterPack": "build/afterPack.js",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    }
+  },
+  "allowScripts": {
+    "electron@45.4.1": true
+  },
+  "homepage": "https://github.com/YigitSezenn/splitdpi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YigitSezenn/splitdpi.git"
+  },
+  "keywords": [
+    "dpi",
+    "sni",
+    "tls",
+    "censorship",
+    "turkey",
+    "discord",
+    "proxy",
+    "doh",
+    "electron",
+    "windows"
+  ]
+}

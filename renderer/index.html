@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:" />
+  <title>SplitDPI</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="titlebar">
+    <div class="brand"><img src="../assets/icon.svg" alt="" /><span>SplitDPI</span><em id="verTag"></em></div>
+    <div class="win-btns">
+      <button data-win="min" title="Küçült"><svg viewBox="0 0 12 12"><path d="M2 6h8"/></svg></button>
+      <button data-win="max" title="Büyüt"><svg viewBox="0 0 12 12"><rect x="2.5" y="2.5" width="7" height="7" rx="1"/></svg></button>
+      <button data-win="close" class="close" title="Tepsiye gizle"><svg viewBox="0 0 12 12"><path d="M3 3l6 6M9 3l-6 6"/></svg></button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar">
+      <div class="nav-ind" id="navInd"></div>
+      <button class="nav active" data-page="home" title="Kontrol"><svg viewBox="0 0 24 24"><path d="M5 21V11a7 7 0 0 1 14 0v10"/><path d="M12 9l2.5 3.5L12 16l-2.5-3.5z"/></svg><span>Kontrol</span></button>
+      <button class="nav" data-page="sites" title="Siteler"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span>Siteler</span></button>
+      <button class="nav" data-page="settings" title="Ayarlar"><svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 12h3M11 12h9M4 17h11M19 17h1"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="17" r="2"/></svg><span>Ayarlar</span></button>
+      <button class="nav" data-page="logs" title="Kayıtlar"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg><span>Kayıtlar</span></button>
+      <div class="spacer"></div>
+      <button class="theme-btn" id="themeBtn" title="Temayı değiştir"><svg viewBox="0 0 24 24"><path id="themeIcon" d=""/></svg></button>
+    </nav>
+
+    <main>
+      <!-- KONTROL -->
+      <section class="page active" id="page-home">
+        <div class="hero">
+          <canvas id="scene"></canvas>
+          <div class="hero-text">
+            <span class="eyebrow"><i class="dot"></i><span id="eyebrow">Bağlı değil</span></span>
+            <h1 class="title" id="title">Süzgece<br />takılıyorsun</h1>
+            <p class="sub" id="sub">Discord ve seçtiğin siteler DPI tarafından engelleniyor. Erişimi açmak için bağlan.</p>
+            <div class="timer" id="timer" aria-live="polite">00:00:00</div>
+            <div class="cta">
+              <button class="connect" id="connectBtn">
+                <span class="spinner"></span>
+                <svg viewBox="0 0 24 24" class="pw"><path d="M12 3v8"/><path d="M6.3 6.3a8 8 0 1 0 11.4 0"/></svg>
+                <span id="connectLabel">Bağlan</span>
+              </button>
+              <button class="btn discord" id="discordBtn" title="Discord'u SplitDPI üzerinden yeniden başlat">
+                <svg viewBox="0 0 24 24"><path d="M8.5 13.5h.01M15.5 13.5h.01"/><path d="M7 18c-2.5 0-4.5-1.5-4.5-1.5 0-6 2.5-11 2.5-11S7 4.5 9 4.5l1 2h4l1-2c2 0 4 1 4 1s2.5 5 2.5 11c0 0-2 1.5-4.5 1.5l-1.2-2H8.2z"/></svg>
+                Discord'u aç
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card wide">
+            <div class="card-head"><label>Canlı trafik</label>
+              <div class="rates"><span class="up">↑ <b id="rUp">0 B/s</b></span><span class="down">↓ <b id="rDown">0 B/s</b></span></div>
+            </div>
+            <canvas id="spark"></canvas>
+          </div>
+          <div class="card"><label>Atlatılan el sıkışma</label><b class="num" id="sBypassed">0</b><small id="sConn">0 bağlantı</small></div>
+          <div class="card"><label>Toplam veri</label><b class="num" id="sTotal">0 B</b><small id="sActive">0 aktif bağlantı</small></div>
+          <div class="card link" id="scopeCard"><label>Kapsam</label><b class="num" id="sScope">—</b><small id="sScopeSub"></small></div>
+        </div>
+      </section>
+
+      <!-- SİTELER -->
+      <section class="page" id="page-sites">
+        <h1>Siteler</h1>
+        <p class="lead">SplitDPI'ın hangi servisler için devreye gireceğini seç. Alt alan adları otomatik olarak kapsanır.</p>
+        <div class="presets" id="presets"></div>
+        <div class="group">
+          <div class="row col"><div><b>Kendi alan adların</b><small>Her satıra bir alan adı (ör. <code>ornek.com</code>). Değişiklik anında uygulanır.</small></div>
+            <textarea data-k="customDomains" rows="5" spellcheck="false" placeholder="ornek.com"></textarea></div>
+        </div>
+      </section>
+
+      <!-- AYARLAR -->
+      <section class="page" id="page-settings">
+        <h1>Ayarlar</h1>
+        <div class="group">
+          <h2>Başlangıç</h2>
+          <label class="row"><div><b>Arka plan servisi</b><small>SplitDPI penceresiz ve tepsi simgesiz olarak arka planda çalışır. Windows açıldığında kendiliğinden başlar, bu pencereyi kapatsan da çalışmaya devam eder. Yönetici izni gerekmez.</small></div><input type="checkbox" class="sw" data-k="serviceMode" /></label>
+          <label class="row svc-dim"><div><b>Windows ile başlat</b><small>Oturum açtığında SplitDPI arka planda açılır.</small></div><input type="checkbox" class="sw" data-k="autoStart" /></label>
+          <label class="row svc-dim"><div><b>Küçültülmüş başlat</b><small>Pencere açılmaz, SplitDPI bildirim alanında (tepside) bekler.</small></div><input type="checkbox" class="sw" data-k="startMinimized" /></label>
+          <label class="row svc-dim"><div><b>Açılışta otomatik bağlan</b><small>Uygulama açıldığında bağlantıyı kendiliğinden kurar.</small></div><input type="checkbox" class="sw" data-k="connectOnLaunch" /></label>
+        </div>
+        <div class="group">
+          <h2>Atlatma yöntemi</h2>
+          <label class="row"><div><b>TLS kaydını böl</b><small>ClientHello'yu SNI'nin ortasından iki TLS kaydına ayırır. En etkili yöntem.</small></div><input type="checkbox" class="sw" data-k="tlsRecordSplit" /></label>
+          <label class="row"><div><b>TCP parçalama</b><small>İlk paketi ayrı TCP segmentleri halinde yollar.</small></div><input type="checkbox" class="sw" data-k="tcpSplit" /></label>
+          <label class="row"><div><b>Parçalar arası bekleme</b><small>Milisaniye. Bağlantı kurulamıyorsa 20–50 arası dene.</small></div><div class="num-in"><input type="number" min="0" max="200" data-k="delayMs" /><span>ms</span></div></label>
+          <label class="row"><div><b>Ek parça boyutu</b><small>0 = kapalı. Kalan veriyi bu boyutta parçalar.</small></div><div class="num-in"><input type="number" min="0" max="1400" data-k="chunkSize" /><span>bayt</span></div></label>
+        </div>
+        <div class="group">
+          <h2>DNS</h2>
+          <div class="row"><div><b>Çözümleme</b><small>DNS-over-HTTPS, ISS'nin DNS engelini atlatır.</small></div>
+            <div class="seg" data-k="dns"><button value="doh">DoH</button><button value="system">Sistem</button></div></div>
+          <div class="row"><div><b>DoH sağlayıcı</b><small>Bağlantı IP üzerinden kurulur, ek DNS gerekmez.</small></div>
+            <div class="seg" data-k="dohProvider"><button value="cloudflare">Cloudflare</button><button value="google">Google</button></div></div>
+        </div>
+        <div class="group">
+          <h2>Sistem</h2>
+          <label class="row"><div><b>Sistem proxy'sini ayarla</b><small>Kapalıyken yalnızca "Discord'u aç" ile başlatılan Discord SplitDPI'dan geçer.</small></div><input type="checkbox" class="sw" data-k="systemProxy" /></label>
+          <label class="row"><div><b>Yerel port</b><small>Proxy'nin dinlediği port.</small></div><div class="num-in"><input type="number" min="1024" max="65535" data-k="port" /></div></label>
+          <div class="row"><div><b>Tema</b></div>
+            <div class="seg" data-k="theme"><button value="system">Sistem</button><button value="dark">Gece</button><button value="light">Gündüz</button></div></div>
+        </div>
+        <div class="about">
+          <img src="../assets/icon.svg" alt="" />
+          <div><b>SplitDPI <span id="aboutVer"></span></b><small>Yerel DPI atlatma aracı. Trafiğin bilgisayarından çıkmadan bölünür; hiçbir sunucuya uğramaz.</small></div>
+        </div>
+      </section>
+
+      <!-- KAYITLAR -->
+      <section class="page" id="page-logs">
+        <div class="logs-head"><h1>Kayıtlar</h1>
+          <div class="logs-tools">
+            <div class="seg small" id="logFilter"><button value="all" class="on">Tümü</button><button value="ok">Atlatılan</button><button value="warn">Uyarı</button></div>
+            <button class="btn ghost" id="clearLogs">Temizle</button>
+          </div>
+        </div>
+        <ul class="logs" id="logs"><li class="empty">Henüz kayıt yok. Bağlandığında burada görünecek.</li></ul>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
