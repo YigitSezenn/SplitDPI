@@ -1,6 +1,6 @@
 # Değişiklik günlüğü
 
-## Yayımlanmamış
+## 1.2.2
 
 - DNS kaydı olmayan adresler (ör. `*.dc-telemetry.net` ölçüm adresleri) artık uyarı olarak değil, bilgi satırı olarak gösteriliyor.
 

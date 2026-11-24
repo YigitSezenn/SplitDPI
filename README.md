@@ -37,7 +37,7 @@ Türkiye'deki internet sağlayıcıları Discord, Roblox ve Wattpad gibi servisl
 > **Windows SmartScreen uyarısı:** Kurulum dosyası dijital olarak imzalı olmadığı için Windows "Bilgisayarınız korundu" uyarısı gösterebilir. **Ek bilgi → Yine de çalıştır** ile devam edebilirsin. İndirdiğin dosyanın değiştirilmediğini, sürüm notlarındaki SHA-256 değeriyle karşılaştırarak doğrulayabilirsin:
 >
 > ```powershell
-> Get-FileHash .\SplitDPI-Setup-1.2.1.exe -Algorithm SHA256
+> Get-FileHash .\SplitDPI-Setup-1.2.2.exe -Algorithm SHA256
 > ```
 
 Önceki adıyla (Geçit) kurulmuş bir sürüm varsa kurulum dosyası onu otomatik olarak kaldırır ve ayarlarını taşır.
