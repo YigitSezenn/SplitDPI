@@ -1,5 +1,13 @@
 # Değişiklik günlüğü
 
+## 1.2.1
+
+Güvenlik düzeltmeleri (Claude Security taramasıyla bulundu):
+
+- **Orta:** Şifresiz HTTP isteklerinde proxy hedef sunucuyu yalnızca bağlantıdaki ilk istekten seçiyordu. Aynı bağlantıdan gelen sonraki istekler başka bir siteye ait olsa bile ilk sunucuya aktarılabiliyordu. Artık bağlantı başına tek istek işleniyor ve sunucuya `Connection: close` gönderiliyor.
+- **Düşük:** Proxy, yerel ve özel ağ adreslerine çözülen alan adlarına bağlanabiliyordu (DNS rebinding). Artık bu adresler 403 ile reddediliyor; denetim bağlanılan adresin kendisine uygulanıyor. Sistem proxy istisnalarına tüm özel ağ aralıkları eklendi.
+- Her iki açık için regresyon testleri eklendi.
+
 ## 1.2.0
 
 - Uygulamanın adı **SplitDPI** oldu. Önceki adla (Geçit) kurulmuş sürüm otomatik kaldırılır, ayarlar taşınır.

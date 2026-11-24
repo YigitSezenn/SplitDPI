@@ -37,7 +37,7 @@ Türkiye'deki internet sağlayıcıları Discord, Roblox ve Wattpad gibi servisl
 > **Windows SmartScreen uyarısı:** Kurulum dosyası dijital olarak imzalı olmadığı için Windows "Bilgisayarınız korundu" uyarısı gösterebilir. **Ek bilgi → Yine de çalıştır** ile devam edebilirsin. İndirdiğin dosyanın değiştirilmediğini, sürüm notlarındaki SHA-256 değeriyle karşılaştırarak doğrulayabilirsin:
 >
 > ```powershell
-> Get-FileHash .\SplitDPI-Setup-1.2.0.exe -Algorithm SHA256
+> Get-FileHash .\SplitDPI-Setup-1.2.1.exe -Algorithm SHA256
 > ```
 
 Önceki adıyla (Geçit) kurulmuş bir sürüm varsa kurulum dosyası onu otomatik olarak kaldırır ve ayarlarını taşır.
@@ -113,13 +113,17 @@ WSL, Windows proxy ayarını izler. WSL kullanmıyorsan görmezden gelebilirsin.
 autoProxy=false
 ```
 
+**Şirket ağındaki bir adres açılmıyor.**
+Güvenlik nedeniyle SplitDPI özel IP adreslerine çözülen alan adlarına bağlanmaz. Şirket içi sitelere SplitDPI kapalıyken eriş ya da **Siteler** ekranında kapsamı yalnızca ihtiyacın olan servislerle sınırla.
+
 **Oyunlar ve hile koruma sistemleri.**
 SplitDPI sürücü yüklemez, başka süreçlere müdahale etmez, oyun dosyalarına dokunmaz. Yaptığı şey Windows proxy ayarını değiştirmektir. Oyun içi trafik genellikle UDP olduğundan SplitDPI'dan geçmez.
 
 ## Güvenlik ve gizlilik
 
 - Proxy yalnızca `127.0.0.1` adresini dinler, ağdaki başka cihazlar erişemez.
-- Tarayıcıdaki sayfaların proxy'yi kötüye kullanmasına (DNS rebinding) karşı yalnızca geçerli `CONNECT` ve mutlak `http://` istekleri kabul edilir.
+- Proxy, yerel makineye (`127.0.0.0/8`, `::1`) ve özel ağlara (`10/8`, `172.16/12`, `192.168/16`, bağlantı-yerel, CGNAT) **asla bağlanmaz**. Bu, bir web sayfasının DNS rebinding ile bilgisayarındaki ya da ev ağındaki servislere (modem paneli, geliştirme sunucuları) ulaşmasını engeller. Bu adreslere giden trafik zaten proxy'yi atlayıp doğrudan gider.
+- Şifresiz HTTP isteklerinde bağlantı başına tek istek işlenir; bir isteğin başka bir siteye ait sunucuya aktarılması mümkün değildir. Sayfaların proxy portuna doğrudan yaptığı istekler reddedilir.
 - Arayüz sandbox içinde ve sıkı bir içerik güvenlik politikasıyla (CSP) çalışır. Yeni pencere açma, dış sayfaya gitme ve tarayıcı izinleri kapalıdır.
 - Paketlenmiş uygulamada Electron'un `RunAsNode`, `NODE_OPTIONS` ve `--inspect` özellikleri [fuse](https://www.electronjs.org/docs/latest/tutorial/fuses) ile kalıcı olarak kapatılmıştır. Uygulama yalnızca kendi paketinden kod yükler.
 - Arayüzden gelen tüm ayarlar ana süreçte doğrulanır.

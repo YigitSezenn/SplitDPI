@@ -41,7 +41,7 @@ async function enable(port) {
   if (!backup) backup = await readCurrent();
   await run('reg', ['add', REG, '/v', 'ProxyEnable', '/t', 'REG_DWORD', '/d', '1', '/f']);
   await run('reg', ['add', REG, '/v', 'ProxyServer', '/t', 'REG_SZ', '/d', `127.0.0.1:${port}`, '/f']);
-  await run('reg', ['add', REG, '/v', 'ProxyOverride', '/t', 'REG_SZ', '/d', 'localhost;127.*;10.*;192.168.*;<local>', '/f']);
+  await run('reg', ['add', REG, '/v', 'ProxyOverride', '/t', 'REG_SZ', '/d', ['localhost', '127.*', '10.*', '192.168.*', '169.254.*', ...Array.from({ length: 16 }, (_, i) => `172.${16 + i}.*`), '[::1]', '<local>'].join(';'), '/f']);
   await refresh();
   return true;
 }
